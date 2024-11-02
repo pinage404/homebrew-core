@@ -1,5 +1,5 @@
 class GitGamble < Formula
-  desc "git-gamble is a tool that blends TDD (Test Driven Development) + TCR (`test && commit || revert`) to make sure to develop the right thing 😌, baby step by baby step 👶🦶"
+  desc "Tool that blends TDD (Test Driven Development) + TCR (test && commit || revert)"
   homepage "https://git-gamble.is-cool.dev"
   url "https://gitlab.com/pinage404/git-gamble/-/archive/version/2.9.0/git-gamble-version-2.9.0.tar.bz2"
   sha256 "0446df2af6d36dbda0afb69fc08fd8129fed756310d9fbecd9b73115920ae647"
@@ -7,7 +7,6 @@ class GitGamble < Formula
   head "https://gitlab.com/pinage404/git-gamble.git", branch: "main"
 
   depends_on "rust" => :build
-  depends_on "git"
 
   def install
     system "cargo", "install", *std_cargo_args
@@ -21,15 +20,15 @@ class GitGamble < Formula
     system "git", "config", "user.email", "git@gamble"
 
     system "sh", "-c", "echo 'failing' > 'some_file'"
-    system "#{bin}/git-gamble", "--red", "--", "false"
+    system bin/"git-gamble", "--red", "--", "false"
     assert_equal "failing", shell_output("cat some_file").strip
 
     system "sh", "-c", "echo 'should pass but still failing' > 'some_file'"
-    system "#{bin}/git-gamble", "--green", "--", "false"
+    system bin/"git-gamble", "--green", "--", "false"
     assert_equal "failing", shell_output("cat some_file").strip
 
     system "sh", "-c", "echo 'passing' > 'some_file'"
-    system "#{bin}/git-gamble", "--refactor", "--", "true"
+    system bin/"git-gamble", "--refactor", "--", "true"
     assert_equal "passing", shell_output("cat some_file").strip
   end
 end

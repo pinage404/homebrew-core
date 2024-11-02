@@ -9,6 +9,9 @@ class GitGamble < Formula
   depends_on "rust" => :build
 
   def install
+    system "cargo", "install", "--locked", "--root", prefix, "git-gamble"
+
+    system "cargo", "install", *std_cargo_args(path: "git-cliff")
     system "cargo", "install", *std_cargo_args
 
     generate_completions_from_executable(bin/"git-gamble", "generate-shell-completions")
@@ -32,3 +35,11 @@ class GitGamble < Formula
     assert_equal "passing", shell_output("cat some_file").strip
   end
 end
+
+
+# podman run --name brew --workdir /w --volume $PWD:/w --interactive --tty docker.io/homebrew/brew:latest bash
+# cd "$(brew --repository homebrew/core)"
+# git remote add local /w
+# export HOMEBREW_NO_INSTALL_FROM_API=1
+# brew create https://gitlab.com/pinage404/git-gamble/-/archive/version/2.9.0/git-gamble-version-2.9.0.tar.bz2
+# HOMEBREW_NO_INSTALL_FROM_API=1 brew audit --new git-gamble
